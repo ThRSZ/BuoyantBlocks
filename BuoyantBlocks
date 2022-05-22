@@ -19,31 +19,16 @@ block = box(pos=vec(0,11,0), size=vec(1,1,1), texture = textures.rock)
 wood =  box(pos=vec(0,12,0), size=vec(.5,.5,.5), texture = textures.wood)
 floor = box(pos=vec(0,-6,0), size=vec(20,2,12), color = color.green)
 
-#Slider1
-def S1(s1):    
-   wt.text = '{:1.2f}'.format(s1.value)         #this is to define the format number
-block.m = slider(min = 1 , max =5 , value = 2.5 , bind=S1)
-wt = wtext(text= "The mass of block is = " '{:1.2f}'.format(block.m.value))  #and to see your selected number on the side of the slider
-scene.append_to_caption(' kg\n')  
-
-#Slider2
-def S2(s2):    
-   wt.text = '{:1.2f}'.format(s2.value)         #this is to define the format number
-wood.m = slider(min = 1 , max =5 , value = 3 , bind=S2)
-wt = wtext(text= "The mass of block is = " '{:1.2f}'.format(wood.m.value))  #and to see your selected number on the side of the slider
-scene.append_to_caption(' kg\n')
-
-
 
 #Initial variables
 block.v = vec(0,0,0)                                  #Intial velocity of block
-block.rho = 500                                      #Density of block
+block.rho = int(input('Density of block'))            #Density of block
 block.volume = block.size.x*block.size.y*block.size.z #Volume of block
 block.m = block.rho*block.volume                      #Mass of Block
 voldis = 0                                            #displaced volume  of block
 
 wood.v = vec(0,0,0)                                   #Initial velocity of wood
-wood.rho = 1000                                        #Density of wood
+wood.rho = int(input('Density of wood'))              #Density of wood
 wood.volume = wood.size.x*wood.size.y*wood.size.z     #Volume of block
 wood.m = wood.rho*wood.volume                         #Mass of Block
 voldis2 = 0                                           #displaced volume of wood
@@ -53,7 +38,6 @@ g = vec(0,-9.8,0)                                     #gravity
 
 t = 0
 dt = 0.01
-#t = t + dt
 
 watercol1 = False
 watercol2 = False
@@ -149,7 +133,7 @@ while (watercol1) and  (not watercol2) and (not blockcol):
   #print(voldis2)
   
   #Buoyant Force
-  block.f = (block.m)*g                                            #gravity
+  block.f = (block.m)*g                                                   #gravity
   block.f = block.f - water.rho*voldis*g                                  #buoyancy
   #print(block.m)
   #print(block.f)
@@ -218,14 +202,14 @@ while (watercol1) and  (not watercol2) and (blockcol):
   
   #Kinematic Equations
   
-  block.v = block.v + block.f/(block.m+wood.m)*dt                                #Velocity of block
+  block.v = block.v + (block.f/(block.m+wood.m))*dt                                #Velocity of block
   wood.v = block.v   
   
   drag = 1/2*(1/5)*water.rho*block.size.y*block.size.x*block.v.y**2
   drag2 = 1/2*(1/5)*water.rho*wood.size.y*wood.size.x*wood.v.y**2
   
-  block.pos = block.pos + block.v*dt + 1/2*(drag2*drag*block.f/(block.m+wood.m))*dt**2 #Position of block
-  wood.pos.y = block.pos.y +.5*block.size.y + .5*wood.size.y                  #Position of wood
+  block.pos = block.pos + block.v*dt + 1/2*(drag*block.f/(block.m+wood.m))*dt**2 #Position of block
+  wood.pos.y = block.pos.y +.5*block.size.y + .5*wood.size.y                     #Position of wood
   #print(block.v)
   #print(block.pos)
   #print(wood.pos)
@@ -262,7 +246,7 @@ while (watercol1) and (watercol2) and (not blockcol):
   i = abs(water.top - wood.bottom)
   #print(water.top)
   #print(block.bottom)
-  #print(h)
+  #print(i)
   
   
   #volume displaced by block
@@ -287,34 +271,37 @@ while (watercol1) and (watercol2) and (not blockcol):
   #print(voldis)
   
   #Buoyant Force
-  block.f = block.m*g                                            #gravity
-  block.f = block.f - water.rho*voldis*g                         #buoyancy
+  block.f = block.m*g                                                     #gravity
+  block.f = block.f - water.rho*voldis*g                                  #buoyancy
+
   #print(block.m)
   #print(block.f)
   
-  wood.f = wood.m*g                                            #gravity
-  wood.f = wood.f - water.rho*voldis2*g                         #buoyancy
+  wood.f = wood.m*g                                                 #gravity
+  wood.f = wood.f - water.rho*voldis2*g                             #buoyancy
+
+
   #print(block.m)
   #print(wood.f)
   
   
   #Kinematic Equations
   
-  block.v = block.v + block.f/block.m*dt                                #Velocity of block
-  drag = 1/2*(1/5)*water.rho*block.size.y*block.size.x*block.v.y**2     #Drag of block
-  block.pos = block.pos + block.v*dt + 1/2*(drag*block.f/block.m)*dt**2 #Position of block
+  block.v = block.v + (block.f/block.m)*dt                                     #Velocity of block
+  drag = 1/2*(1/5)*water.rho*block.size.y*block.size.x*block.v.y**2            #Drag of block
+  block.pos = block.pos + block.v*dt + 1/2*(drag*block.f/block.m)*dt**2        #Position of block
   #print(block.v)
   #print(block.pos)
   
-  wood.v = wood.v + wood.f/wood.m*dt                                #Velocity of wood
-  drag2 = 1/2*(1/5)*water.rho*wood.size.y*wood.size.x*wood.v.y**2   #Drag of wood
-  wood.pos = wood.pos + wood.v*dt + 1/2*(drag2*wood.f/wood.m)*dt**2 #Position of wood
+  wood.v = wood.v + (wood.f/wood.m)*dt                                    #Velocity of wood
+  drag2 = 1/2*(1/5)*water.rho*wood.size.y*wood.size.x*wood.v.y**2         #Drag of wood
+  wood.pos = wood.pos + wood.v*dt + 1/2*(drag2*wood.f/wood.m)*dt**2       #Position of wood
   
   
   #Time increment
   t = t + dt
   
-  if block.pos.y <= -4.5 or t >= 30:
+  if block.pos.y <= -4.5:# or t >= 30:
     break
 
 #Buoyant Force (Blocks touching, both in water)
@@ -343,7 +330,7 @@ while (watercol1) and  (watercol2) and (blockcol):
   i = abs(water.top - wood.bottom)
   #print(water.top)
   #print(block.bottom)
-  #print(h)
+  #print(i)
   
   
   
@@ -366,8 +353,8 @@ while (watercol1) and  (watercol2) and (blockcol):
     #print('no')
   
   
-  #print(voldis)
-  #print(voldis2)
+  print('Volume diplaced by block is', voldis)
+  print('Volume diplaced by wood is', voldis2)
   
   #Buoyant Force
   block.f = (block.m+wood.m)*g                              #gravity
@@ -378,20 +365,53 @@ while (watercol1) and  (watercol2) and (blockcol):
   
   #Kinematic Equations
   
-  block.v = block.v + block.f/(block.m+wood.m)*dt                                #Velocity of block
+  block.v = block.v + block.f/(block.m+wood.m)*dt                                       #Velocity of block
   wood.v = block.v   
   
-  drag = 1/2*(1/5)*water.rho*block.size.y*block.size.x*block.v.y**2
-  drag2 = 1/2*(1/5)*water.rho*wood.size.y*wood.size.x*wood.v.y**2
+  drag = 1/2*(1/5)*water.rho*(block.size.y+wood.size.y)*(block.size.x+wood.size.x)*block.v.y**2
   
-  block.pos = block.pos + block.v*dt + 1/2*(drag2*drag*block.f/(block.m+wood.m))*dt**2 #Position of block
+  block.pos = block.pos + block.v*dt + 1/2*(drag*block.f/(block.m+wood.m))*dt**2 #Position of block
   wood.pos.y = block.pos.y +.5*block.size.y + .5*wood.size.y                           #Position of wood
-  print(block.v)
+  #print(block.v)
   #print(block.pos)
   #print(wood.pos)
   
   #Time increment
   t = t + dt
   
+  #print(blockdist)
+  #print(h)
+  #print (i)
+
   if block.pos.y <= -4.5: #or t >= 30:
     break
+
+while (not watercol1) and (watercol2) and (blockcol):
+  rate(100)
+  print('Blocks weird interaction')
+  
+  #Check for collision. 
+  dist_y1 = (block.pos.y - 0.5*block.size.y) - (water.pos.y + 0.5*water.size.y) 
+  watercol1 = (dist_y1 < 0)
+  
+  dist_y2 = (wood.pos.y - 0.5*wood.size.y) - (water.pos.y + 0.5*water.size.y) 
+  watercol2 = (dist_y2 < 0)
+  
+  blockdist = (wood.pos.y - 0.5*wood.size.y) - (block.pos.y + 0.5*block.size.y) 
+  blockcol = (blockdist <= 0)
+  
+
+while (not watercol1) and  (watercol2) and (not blockcol):
+  rate(100)
+  print('Blocks weird interation 2')
+  
+  #Check for collision. 
+  dist_y1 = (block.pos.y - 0.5*block.size.y) - (water.pos.y + 0.5*water.size.y) 
+  watercol1 = (dist_y1 < 0)
+  
+  dist_y2 = (wood.pos.y - 0.5*wood.size.y) - (water.pos.y + 0.5*water.size.y) 
+  watercol2 = (dist_y2 < 0)
+  
+  blockdist = (wood.pos.y - 0.5*wood.size.y) - (block.pos.y + 0.5*block.size.y) 
+  blockcol = (blockdist <= 0)
+  
